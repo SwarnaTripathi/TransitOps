@@ -1,101 +1,245 @@
-# TransitOps — Smart Transport Operations Platform
+# 🚛 TransitOps — Smart Transport Operations Platform
 
-> **TransitOps doesn't just digitize fleet records — it flags fuel-cost anomalies automatically, prioritizes safety-compliance risk, and gives every operator a live audit trail of what's happening across the fleet in real time.**
+> **TransitOps is a smart fleet management platform that streamlines vehicle, driver, trip, maintenance, fuel, and reporting operations through a centralized dashboard with role-based access control.**
 
-TransitOps is a comprehensive, scalable fleet management solution designed to digitize and optimize daily transport operations. Built with a contract-first architecture, it provides an end-to-end workflow for fleet managers, dispatchers, safety officers, and financial analysts to collaborate seamlessly on a single unified platform.
-
----
-
-## ✨ Key Features
-
-*   **Role-Based Access Control (RBAC):** Tailored views and permissions for `Fleet Manager`, `Dispatcher`, `Safety Officer`, and `Financial Analyst`.
-*   **Intelligent Trip Dispatch:** Context-aware trip creation that automatically filters out vehicles that are "In Shop", "Retired", or already "On Trip". Enforces strict cargo capacity constraints.
-*   **Fuel Anomaly Detection (Novelty Feature):** Employs a rolling-average baseline to instantly flag fuel logs that fall 25%+ below expected efficiency, highlighting potential fuel theft or mechanical issues.
-*   **Lifecycle State Engine:** Shared status engine automatically flips vehicle status across modules (e.g., Opening a maintenance log instantly marks the vehicle as "In Shop" system-wide).
-*   **Robust Data Integrity:** Employs strict **Zod** input validation on all incoming API requests and uses **Soft Deletes** (`isDeleted: true`) to ensure historical financial and reporting data remains intact indefinitely.
+TransitOps is a full-stack fleet management system built to digitize transport operations and improve operational efficiency. It enables fleet managers, safety officers, drivers, and financial analysts to manage vehicles, drivers, trips, maintenance records, fuel expenses, and reports through a unified web application.
 
 ---
 
-## 🛠 Tech Stack
+# ✨ Features
 
-*   **Frontend:** React (Vite), Tailwind CSS, Recharts (for Analytics)
-*   **Backend:** Node.js, Express.js
-*   **Database:** MongoDB (Atlas) & Mongoose ODM
-*   **Architecture:** Monorepo, ESM modules (`"type": "module"`), feature-sliced directory structure.
+## 🚛 Vehicle Management
+- Register, update, and delete vehicles.
+- Track vehicle status (Available, On Trip, In Shop, Retired).
+- Store vehicle capacity, odometer, acquisition cost, and region.
+- Automatically update vehicle status during trip and maintenance operations.
 
 ---
 
-## 🚀 Getting Started
+## 👨‍✈️ Driver Management
+- Manage driver profiles.
+- Track license details and expiry dates.
+- Monitor driver availability.
+- Prevent assigning suspended or expired-license drivers.
 
-### Prerequisites
-*   Node.js (v18+)
-*   MongoDB Instance (Local or Atlas)
+---
 
-### 1. Clone the Repository
+## 📋 Trip Management
+- Create draft trips.
+- Dispatch, complete, and cancel trips.
+- Automatic vehicle and driver allocation.
+- Cargo capacity validation.
+- Planned vs Actual distance tracking.
+- Fuel consumption recording.
+- Vehicle odometer updates after trip completion.
+- Activity logging for every trip action.
+
+---
+
+## 🔧 Maintenance Management
+- Open and close maintenance records.
+- Automatically update vehicle status to **In Shop**.
+- Restore vehicle availability after maintenance completion.
+
+---
+
+## ⛽ Fuel & Expense Management
+- Record fuel logs.
+- Track operational expenses.
+- Generate fuel usage history.
+
+---
+
+## 📊 Reports & Dashboard
+- Fleet utilization overview.
+- Fuel efficiency reports.
+- Cost reports.
+- ROI reports.
+- Dashboard summary cards with operational insights.
+
+---
+
+## 🔐 Role-Based Access Control (RBAC)
+
+The system supports multiple user roles with different permissions.
+
+- 🚛 Fleet Manager
+- 🛡️ Safety Officer
+- 👨‍✈️ Driver
+- 💰 Financial Analyst
+
+Role switching is available in the application for demonstration and testing.
+
+---
+
+# 🛠 Tech Stack
+
+### Frontend
+- React (Vite)
+- JavaScript (ES6+)
+- CSS3
+- Fetch API
+
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB
+- Mongoose ODM
+
+### Other Tools
+- Git & GitHub
+- REST API
+- ES Modules
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+- Node.js (v18 or above)
+- MongoDB (Local or Atlas)
+
+---
+
+## Clone Repository
+
 ```bash
 git clone https://github.com/SwarnaTripathi/TransitOps.git
+
 cd TransitOps
 ```
 
-### 2. Backend Setup
+---
+
+## Backend Setup
+
 ```bash
 cd backend
 npm install
 ```
-*   Create a `.env` file in the `backend/` directory:
+
+Create a `.env` file.
+
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_secret_key
 ```
-*   Seed the database with initial demo data:
+
+Run the backend.
+
+```bash
+npm run dev
+```
+
+(Optional)
+
 ```bash
 npm run seed
 ```
-*   Start the server:
-```bash
-npm run dev
-```
 
-### 3. Frontend Setup
+---
+
+## Frontend Setup
+
 ```bash
-cd ../frontend
+cd frontend
 npm install
-```
-*   Start the Vite development server:
-```bash
 npm run dev
 ```
 
 ---
 
-## 📂 Project Structure (Monorepo)
+# 🔑 Demo Login Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| 🚛 Fleet Manager | `admin@transitops.com` | `admin123` |
+| 🚛 Fleet Manager | `manager@transitops.com` | `manager123` |
+| 🛡️ Safety Officer | `safety@transitops.com` | `safety123` |
+| 👨‍✈️ Driver | `driver@transitops.com` | `driver123` |
+| 👨‍✈️ Driver | `driver2@transitops.com` | `driver123` |
+| 💰 Financial Analyst | `finance@transitops.com` | `finance123` |
+
+> **Note:** These are demo credentials for testing the application.
+
+---
+
+# 📂 Project Structure
 
 ```text
-TransitOps/
-├── frontend/
-│   ├── src/
-│   │   ├── modules/       # Feature-sliced React pages (vehicles, trips, etc.)
-│   │   ├── shared/        # Reusable API instances, components, and contexts
-│   │   └── App.jsx        # Routing and Layout Shell
+TransitOps
+│
+├── backend
+│   ├── src
+│   │   ├── modules
+│   │   ├── shared
+│   │   ├── server.js
+│   │   └── seed.js
 │   └── package.json
-└── backend/
-    ├── src/
-    │   ├── modules/       # Feature-sliced Express controllers & routes
-    │   ├── shared/        # Auth guards, Zod validation, and Status Engine
-    │   ├── server.js      # Main Express application entry point
-    │   └── seed.js        # Database seeder for demo environments
-    └── package.json
+│
+├── frontend
+│   ├── src
+│   │   ├── modules
+│   │   ├── shared
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
 
-## 📊 Analytics & Reporting
+# 📌 Core Workflow
 
-The built-in Financial Analyst dashboard provides real-time computations for:
-*   **Fleet Utilization %**
-*   **Fuel Efficiency** (Rolling averages and anomaly tracking)
-*   **Total Operational Cost** (Maintenance + Expenses)
-*   **Trip ROI**
+```text
+Vehicle + Driver
+        │
+        ▼
+Create Draft Trip
+        │
+        ▼
+Dispatch Trip
+        │
+        ▼
+Vehicle → On Trip
 
+Driver → On Trip
+        │
+        ▼
+Complete Trip
+        │
+        ▼
+Vehicle → Available
 
+Driver → Available
+
+Vehicle Odometer Updated
+```
+
+---
+
+# 📈 Reports
+
+The application provides reports for:
+
+- Fleet Utilization
+- Fuel Efficiency
+- Operational Cost
+- Return on Investment (ROI)
+
+---
+
+# 👥 Team
+
+Developed as part of the **Odoo Hackathon** using a modular architecture where each team member was responsible for specific functional modules.
+
+---
+
+# 📄 License
+
+This project is developed for educational and hackathon purposes.
