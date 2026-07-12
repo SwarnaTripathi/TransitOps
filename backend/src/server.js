@@ -13,6 +13,7 @@ import maintenanceRoutes from "./modules/maintenance/maintenanceRoutes.js";
 import fuelExpenseRoutes from "./modules/fuelExpense/fuelExpenseRoutes.js";
 import reportRoutes from "./modules/reports/reportRoutes.js";
 import activityRoutes from "./shared/routes/activityRoutes.js";
+import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 
 // Middleware imports
 import { errorHandler } from "./shared/middleware/errorHandler.js";
@@ -61,25 +62,7 @@ app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/fuel", fuelExpenseRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/activity-logs", activityRoutes);
-
-// ===========================
-// Dashboard API (Temporary)
-// ===========================
-
-app.get("/api/dashboard/stats", (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      activeVehicles: 5,
-      availableVehicles: 6,
-      vehiclesInMaintenance: 1,
-      activeTrips: 3,
-      pendingTrips: 2,
-      driversOnDuty: 4,
-      fleetUtilization: 72.5,
-    },
-  });
-});
+app.use("/api/dashboard", dashboardRoutes);
 
 // ===========================
 // Root Route

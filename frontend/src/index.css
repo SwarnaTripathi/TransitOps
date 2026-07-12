@@ -1447,3 +1447,259 @@ a {
 }
 
 
+/* ===========================
+   Role-Based Dashboard Styles
+   =========================== */
+
+.role-dashboard {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dashboard Header with Greeting */
+.role-dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.role-greeting h1 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.role-subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Role Badge */
+.role-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.role-badge-icon {
+  font-size: 1rem;
+}
+
+.driver-badge {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+}
+
+.safety-badge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+}
+
+.finance-badge {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+}
+
+.manager-badge {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+}
+
+/* Role Stat Cards Grid */
+.role-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.role-cards-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.role-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.role-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.role-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.role-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.role-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.role-stat-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Summary Cards */
+.role-summary-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.role-summary-card {
+  padding: 1.5rem;
+}
+
+.role-summary-card h3 {
+  margin: 0 0 1.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.role-summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.role-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.role-summary-row:last-child {
+  border-bottom: none;
+}
+
+.role-summary-row span {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.role-summary-row strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Quick Actions */
+.role-quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.role-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 10px;
+  color: #818cf8;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.role-action-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateX(4px);
+}
+
+.role-tip {
+  padding: 1rem;
+  background: rgba(245, 158, 11, 0.06);
+  border-left: 3px solid rgba(245, 158, 11, 0.4);
+  border-radius: 0 8px 8px 0;
+}
+
+.role-tip p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.role-tip strong {
+  color: #fbbf24;
+}
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .role-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .role-cards-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .role-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .role-cards-grid,
+  .role-cards-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .role-dashboard-header {
+    flex-direction: column;
+  }
+  .role-greeting h1 {
+    font-size: 1.3rem;
+  }
+}

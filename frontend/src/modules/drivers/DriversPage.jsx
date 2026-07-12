@@ -35,6 +35,7 @@ export default function DriversPage({ onShowToast, userRole }) {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchDrivers();

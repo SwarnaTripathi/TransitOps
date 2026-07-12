@@ -1,18 +1,61 @@
 import { NavLink } from "react-router-dom";
 import useAuth from "../../modules/auth/hooks/useAuth.js";
 
+/**
+ * Role-based navigation configuration.
+ * Each nav item specifies which roles can see it.
+ */
+const allNavItems = [
+  {
+    to: "/dashboard",
+    icon: "📊",
+    label: "Dashboard",
+    roles: ["Fleet Manager", "Driver", "Safety Officer", "Financial Analyst"],
+  },
+  {
+    to: "/vehicles",
+    icon: "🚛",
+    label: "Vehicles Registry",
+    roles: ["Fleet Manager", "Safety Officer"],
+  },
+  {
+    to: "/drivers",
+    icon: "👥",
+    label: "Driver Profiles",
+    roles: ["Fleet Manager", "Safety Officer"],
+  },
+  {
+    to: "/trips",
+    icon: "📋",
+    label: "Trip Dispatch",
+    roles: ["Fleet Manager", "Driver"],
+  },
+  {
+    to: "/maintenance",
+    icon: "🔧",
+    label: "Maintenance",
+    roles: ["Fleet Manager", "Safety Officer"],
+  },
+  {
+    to: "/fuel",
+    icon: "⛽",
+    label: "Fuel & Expenses",
+    roles: ["Fleet Manager", "Financial Analyst"],
+  },
+  {
+    to: "/reports",
+    icon: "📊",
+    label: "Reports",
+    roles: ["Fleet Manager", "Safety Officer", "Financial Analyst"],
+  },
+];
+
 export default function Sidebar() {
   const { user } = useAuth();
+  const userRole = user?.role || "Driver";
 
-  const navItems = [
-    { to: "/dashboard", icon: "📊", label: "Dashboard" },
-    { to: "/vehicles", icon: "🚛", label: "Vehicles Registry" },
-    { to: "/drivers", icon: "👥", label: "Driver Profiles" },
-    { to: "/trips", icon: "📋", label: "Trip Dispatch" },
-    { to: "/maintenance", icon: "🔧", label: "Maintenance" },
-    { to: "/fuel", icon: "⛽", label: "Fuel & Expenses" },
-    { to: "/reports", icon: "📊", label: "Reports" },
-  ];
+  // Filter nav items based on the user's role
+  const navItems = allNavItems.filter((item) => item.roles.includes(userRole));
 
   return (
     <aside className="sidebar">

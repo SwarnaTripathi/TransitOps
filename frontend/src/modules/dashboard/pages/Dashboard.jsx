@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import useAuth from "../../../modules/auth/hooks/useAuth.js";
 import DashboardCards from "../components/DashboardCards.jsx";
 import KPISection from "../components/KPISection.jsx";
 import DashboardFilters from "../components/DashboardFilters.jsx";
@@ -6,9 +7,13 @@ import ActivityFeed from "../components/ActivityFeed.jsx";
 import VehicleChart from "../components/VehicleChart.jsx";
 import TripChart from "../components/TripChart.jsx";
 import UtilizationChart from "../components/UtilizationChart.jsx";
+import DriverDashboard from "../components/DriverDashboard.jsx";
+import SafetyDashboard from "../components/SafetyDashboard.jsx";
+import FinanceDashboard from "../components/FinanceDashboard.jsx";
 import { fetchDashboardStats, fetchActivityLogs } from "../api/dashboardApi.js";
 
 export default function Dashboard() {
+  const { user, role } = useAuth();
   const [stats, setStats] = useState(null);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +25,9 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    // Only Fleet Manager uses this top-level data fetch
+    if (role !== "Fleet Manager") return;
+
     const loadData = async () => {
       try {
         setLoading(true);
@@ -50,8 +58,22 @@ export default function Dashboard() {
 
     loadData();
     loadActivities();
-  }, []);
+  }, [role]);
 
+  // Render role-specific dashboards
+  if (role === "Driver") {
+    return <DriverDashboard user={user} />;
+  }
+
+  if (role === "Safety Officer") {
+    return <SafetyDashboard user={user} />;
+  }
+
+  if (role === "Financial Analyst") {
+    return <FinanceDashboard user={user} />;
+  }
+
+  // Fleet Manager — full dashboard
   if (loading) {
     return (
       <div className="dashboard-loading">
@@ -61,14 +83,22 @@ export default function Dashboard() {
     );
   }
 
+  const greeting = getGreeting();
+
   return (
     <div className="dashboard-page">
       <div className="page-header">
         <div>
-          <h1 style={{ marginBottom: "0.25rem" }}>Dashboard</h1>
+          <h1 style={{ marginBottom: "0.25rem" }}>
+            {greeting}, {user?.name || "Manager"} 🚀
+          </h1>
           <p style={{ color: "var(--text-secondary)", margin: 0, fontSize: "0.9rem" }}>
-            Fleet operations overview and key metrics
+            Full fleet operations overview and key metrics
           </p>
+        </div>
+        <div className="role-badge manager-badge">
+          <span className="role-badge-icon">⚙️</span>
+          <span>Fleet Manager</span>
         </div>
       </div>
 
@@ -93,4 +123,11 @@ export default function Dashboard() {
       </div>
     </div>
   );
+}
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
 }
