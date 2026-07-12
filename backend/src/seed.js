@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import Vehicle from './modules/vehicles/Vehicle.js';
 import Driver from './modules/drivers/Driver.js';
 import ActivityLog from './shared/models/ActivityLog.js';
+import User from './shared/models/User.js';
+import Role from './shared/models/Role.js';
 
 dotenv.config();
 
@@ -15,7 +17,34 @@ const seedData = async () => {
     await Vehicle.deleteMany({});
     await Driver.deleteMany({});
     await ActivityLog.deleteMany({});
+    await User.deleteMany({});
+    await Role.deleteMany({});
     console.log('Cleared existing database entries.');
+
+    // Seed Roles
+    const roles = [
+      { name: 'Fleet Manager', description: 'Full access to fleet management operations', permissions: ['manage_vehicles', 'manage_drivers', 'manage_trips', 'manage_users', 'view_reports', 'view_dashboard'] },
+      { name: 'Driver', description: 'Access to assigned trips and personal profile', permissions: ['view_trips', 'update_trip_status', 'view_profile'] },
+      { name: 'Safety Officer', description: 'Access to safety reports and driver compliance', permissions: ['view_drivers', 'manage_safety', 'view_reports', 'view_dashboard'] },
+      { name: 'Financial Analyst', description: 'Access to financial reports and expense data', permissions: ['view_reports', 'view_expenses', 'view_dashboard'] },
+    ];
+
+    await Role.insertMany(roles);
+    console.log(`Seeded ${roles.length} roles.`);
+
+    // Seed Users (password is hashed automatically via pre-save hook)
+    const users = [
+      { name: 'Admin Fleet Manager', email: 'admin@transitops.com', password: 'admin123', role: 'Fleet Manager', phone: '+1-555-0100' },
+      { name: 'Sarah Safety', email: 'safety@transitops.com', password: 'safety123', role: 'Safety Officer', phone: '+1-555-0200' },
+      { name: 'John Driver', email: 'driver@transitops.com', password: 'driver123', role: 'Driver', phone: '+1-555-0300' },
+      { name: 'Anna Finance', email: 'finance@transitops.com', password: 'finance123', role: 'Financial Analyst', phone: '+1-555-0400' },
+    ];
+
+    // Use create() (not insertMany) to trigger pre-save hooks for password hashing
+    for (const userData of users) {
+      await User.create(userData);
+    }
+    console.log(`Seeded ${users.length} users.`);
 
     // Seed Vehicles
     const vehicles = [
@@ -59,16 +88,27 @@ const seedData = async () => {
 
     // Create Initial Activity Logs
     const activities = [
-      { action: "Vehicle status changed from 'Available' to 'On Trip' for registration number: VAN-002", entityType: 'Vehicle', entityId: seededVehicles[1]._id, timestamp: addDays(today, -2) },
-      { action: "Driver status changed from 'Available' to 'On Trip' for driver: David Smith", entityType: 'Driver', entityId: seededDrivers[3]._id, timestamp: addDays(today, -2) },
-      { action: "Vehicle status changed from 'Available' to 'In Shop' for registration number: VAN-003", entityType: 'Vehicle', entityId: seededVehicles[2]._id, timestamp: addDays(today, -1) },
-      { action: "Driver status changed from 'Available' to 'Suspended' for driver: James Wilson due to multiple minor safety flags", entityType: 'Driver', entityId: seededDrivers[4]._id, timestamp: addDays(today, -1) }
+      { actor: 'System', actorName: 'System', action: "Vehicle status changed from 'Available' to 'On Trip' for registration number: VAN-002", entityType: 'Vehicle', entityId: seededVehicles[1]._id, timestamp: addDays(today, -2) },
+      { actor: 'System', actorName: 'System', action: "Driver status changed from 'Available' to 'On Trip' for driver: David Smith", entityType: 'Driver', entityId: seededDrivers[3]._id, timestamp: addDays(today, -2) },
+      { actor: 'System', actorName: 'System', action: "Vehicle status changed from 'Available' to 'In Shop' for registration number: VAN-003", entityType: 'Vehicle', entityId: seededVehicles[2]._id, timestamp: addDays(today, -1) },
+      { actor: 'Admin Fleet Manager', actorName: 'Admin Fleet Manager', action: "Driver status changed from 'Available' to 'Suspended' for driver: James Wilson due to multiple minor safety flags", entityType: 'Driver', entityId: seededDrivers[4]._id, timestamp: addDays(today, -1) },
+      { actor: 'Admin Fleet Manager', actorName: 'Admin Fleet Manager', action: "Created new user 'Sarah Safety' with role 'Safety Officer'", entityType: 'User', timestamp: addDays(today, -3) },
+      { actor: 'Admin Fleet Manager', actorName: 'Admin Fleet Manager', action: "Created new user 'John Driver' with role 'Driver'", entityType: 'User', timestamp: addDays(today, -3) },
     ];
 
     await ActivityLog.insertMany(activities);
     console.log('Seeded initial activity logs.');
 
-    console.log('Database Seeding Complete!');
+    console.log('\n========================================');
+    console.log('  Database Seeding Complete!');
+    console.log('========================================');
+    console.log('\nLogin Credentials:');
+    console.log('  Fleet Manager:     admin@transitops.com / admin123');
+    console.log('  Safety Officer:    safety@transitops.com / safety123');
+    console.log('  Driver:            driver@transitops.com / driver123');
+    console.log('  Financial Analyst: finance@transitops.com / finance123');
+    console.log('========================================\n');
+    
     process.exit(0);
   } catch (error) {
     console.error(`Seeding error: ${error.message}`);

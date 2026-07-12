@@ -2,9 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
+
+// Route imports
+import authRoutes from './modules/auth/auth.routes.js';
+import userRoutes from './modules/auth/user.routes.js';
 import vehicleRoutes from './modules/vehicles/vehicleRoutes.js';
 import driverRoutes from './modules/drivers/driverRoutes.js';
 import activityRoutes from './shared/routes/activityRoutes.js';
+
+// Middleware imports
+import { errorHandler } from './shared/middleware/errorHandler.js';
 
 // Load environment variables
 dotenv.config();
@@ -29,26 +36,35 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/activity-logs', activityRoutes);
+
+// Dashboard mock data API
+app.get('/api/dashboard/stats', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      activeVehicles: 5,
+      availableVehicles: 6,
+      vehiclesInMaintenance: 1,
+      activeTrips: 3,
+      pendingTrips: 2,
+      driversOnDuty: 4,
+      fleetUtilization: 72.5,
+    },
+  });
+});
 
 // Root route
 app.get('/', (req, res) => {
   res.json({ message: 'TransitOps Backend API running' });
 });
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    success: false,
-    error: {
-      code: 'SERVER_ERROR',
-      message: err.message || 'An unexpected error occurred'
-    }
-  });
-});
+// Global Error Handler (must be after all routes)
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
