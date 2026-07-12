@@ -98,4 +98,4 @@ The built-in Financial Analyst dashboard provides real-time computations for:
 *   **Total Operational Cost** (Maintenance + Expenses)
 *   **Trip ROI**
 
-*Developed for the EcoSphere Challenge / ESG Engagement Platform.*
+
