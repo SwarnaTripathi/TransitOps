@@ -33,6 +33,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
+    
 
     const loadActivities = async () => {
       try {
