@@ -7,6 +7,7 @@ import Role from '../shared/models/Role.js';
 import Vehicle from '../modules/vehicles/Vehicle.js';
 import Driver from '../modules/drivers/Driver.js';
 import ActivityLog from '../shared/models/ActivityLog.js';
+import Trip from '../modules/trips/Trip.js';
 
 // Seed data
 import { roles } from './roles.seed.js';
@@ -14,6 +15,7 @@ import { users } from './users.seed.js';
 import { vehicles } from './vehicles.seed.js';
 import { drivers } from './drivers.seed.js';
 import { seedActivityLogs } from './activity.seed.js';
+import { seedTrips } from './trips.seed.js';
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ const seedDatabase = async () => {
       Vehicle.deleteMany({}),
       Driver.deleteMany({}),
       ActivityLog.deleteMany({}),
+      Trip.deleteMany({}),
     ]);
     console.log('✅ Existing data cleared\n');
 
@@ -67,6 +70,11 @@ const seedDatabase = async () => {
     const logCount = await seedActivityLogs(createdUsers, createdVehicles, createdDrivers);
     console.log(`   ✅ ${logCount} activity logs created`);
 
+    // ── Seed Trips ────────────────────────────────────────────────────
+    console.log('🚚 Seeding trips...');
+    const tripCount = await seedTrips(createdVehicles, createdDrivers);
+    console.log(`   ✅ ${tripCount} trips created`);
+
     // ── Summary ───────────────────────────────────────────────────────
     console.log('\n🎉 Database seeded successfully!');
     console.log('─'.repeat(40));
@@ -74,6 +82,7 @@ const seedDatabase = async () => {
     console.log(`   Users:         ${createdUsers.length}`);
     console.log(`   Vehicles:      ${createdVehicles.length}`);
     console.log(`   Drivers:       ${createdDrivers.length}`);
+    console.log(`   Trips:         ${tripCount}`);
     console.log(`   Activity Logs: ${logCount}`);
     console.log('─'.repeat(40));
 
