@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { getMeApi, loginApi, logoutApi } from "../../modules/auth/api/authApi.js";
+import { getMeApi, loginApi, registerApi, logoutApi } from "../../modules/auth/api/authApi.js";
 import {
   setAuthData,
   clearAuthData,
@@ -62,6 +62,25 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const register = useCallback(async (userData) => {
+    setError(null);
+    try {
+      const response = await registerApi(userData);
+      if (response.success && response.data) {
+        const { user: userDataResult, token } = response.data;
+        setAuthData(token, userDataResult);
+        setUser(userDataResult);
+        return { success: true };
+      }
+      return { success: false, message: response.message || "Registration failed" };
+    } catch (err) {
+      const message =
+        err.response?.data?.error?.message || err.message || "Registration failed";
+      setError(message);
+      return { success: false, message };
+    }
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await logoutApi();
@@ -78,6 +97,7 @@ export function AuthProvider({ children }) {
     loading,
     error,
     login,
+    register,
     logout,
     isAuthenticated: !!user,
     role: user?.role || null,

@@ -20,6 +20,16 @@ const handleResponse = async (response) => {
 };
 
 export const api = {
+  // Auth
+  register: async (userData) => {
+    const res = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+    return handleResponse(res);
+  },
+
   // Vehicles
   getVehicles: async () => {
     const res = await fetch(`${API_BASE_URL}/vehicles`, {

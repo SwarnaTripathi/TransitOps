@@ -12,6 +12,16 @@ export const loginApi = async (email, password) => {
 };
 
 /**
+ * Register a new user.
+ * @param {object} userData
+ * @returns {Promise<{user: object, token: string}>}
+ */
+export const registerApi = async (userData) => {
+  const response = await axiosInstance.post("/auth/register", userData);
+  return response.data;
+};
+
+/**
  * Logout the current user.
  * @returns {Promise<object>}
  */

@@ -1,15 +1,16 @@
 import { useState } from "react";
 
-export default function LoginForm({ onSubmit, loading, error }) {
+export default function RegisterForm({ onSubmit, loading, error }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Fleet Manager");
+  const [role, setRole] = useState("Driver");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (email.trim() && password.trim()) {
-      onSubmit(email.trim(), password);
+    if (name.trim() && email.trim() && password.trim()) {
+      onSubmit({ name: name.trim(), email: email.trim(), password, role });
     }
   };
 
@@ -23,9 +24,24 @@ export default function LoginForm({ onSubmit, loading, error }) {
       )}
 
       <div className="form-group">
-        <label htmlFor="login-email">Email Address</label>
+        <label htmlFor="reg-name">Full Name</label>
         <input
-          id="login-email"
+          id="reg-name"
+          type="text"
+          className="form-input"
+          placeholder="John Doe"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          autoComplete="name"
+          autoFocus
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="reg-email">Email Address</label>
+        <input
+          id="reg-email"
           type="email"
           className="form-input"
           placeholder="you@transitops.com"
@@ -33,14 +49,13 @@ export default function LoginForm({ onSubmit, loading, error }) {
           onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
-          autoFocus
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="login-role">Sign in as</label>
+        <label htmlFor="reg-role">Role</label>
         <select
-          id="login-role"
+          id="reg-role"
           className="form-select"
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -54,17 +69,17 @@ export default function LoginForm({ onSubmit, loading, error }) {
       </div>
 
       <div className="form-group">
-        <label htmlFor="login-password">Password</label>
+        <label htmlFor="reg-password">Password</label>
         <div className="password-wrapper">
           <input
-            id="login-password"
+            id="reg-password"
             type={showPassword ? "text" : "password"}
             className="form-input"
-            placeholder="Enter your password"
+            placeholder="Create a password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            autoComplete="current-password"
+            autoComplete="new-password"
             minLength={6}
           />
           <button
@@ -81,15 +96,15 @@ export default function LoginForm({ onSubmit, loading, error }) {
       <button
         type="submit"
         className="btn btn-primary login-btn"
-        disabled={loading || !email.trim() || !password.trim()}
+        disabled={loading || !name.trim() || !email.trim() || !password.trim()}
       >
         {loading ? (
           <>
             <span className="spinner" />
-            Signing in...
+            Creating Account...
           </>
         ) : (
-          "Sign In"
+          "Create Account"
         )}
       </button>
     </form>

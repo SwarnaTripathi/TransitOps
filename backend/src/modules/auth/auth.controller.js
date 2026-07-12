@@ -1,4 +1,6 @@
 import { loginUser, getCurrentUser } from "./auth.service.js";
+import { createUser } from "./user.service.js";
+import { generateToken } from "../../shared/utils/jwt.js";
 import { sendSuccess, sendError } from "../../shared/utils/response.js";
 
 /**
@@ -14,6 +16,34 @@ const login = async (req, res, next) => {
       user: result.user,
       token: result.token,
     }, "Login successful");
+  } catch (error) {
+    if (error.statusCode) {
+      return sendError(res, error.message, error.statusCode, "AUTH_ERROR");
+    }
+    next(error);
+  }
+};
+
+/**
+ * POST /api/auth/register
+ * Register a new user and return JWT token.
+ */
+const register = async (req, res, next) => {
+  try {
+    const userData = req.body;
+    const user = await createUser(userData, userData.name || "Self Registration");
+
+    // Generate JWT
+    const token = generateToken({
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return sendSuccess(res, {
+      user,
+      token,
+    }, "Registration successful", 201);
   } catch (error) {
     if (error.statusCode) {
       return sendError(res, error.message, error.statusCode, "AUTH_ERROR");
@@ -48,4 +78,4 @@ const getMe = async (req, res, next) => {
   }
 };
 
-export { login, logout, getMe };
+export { login, register, logout, getMe };
