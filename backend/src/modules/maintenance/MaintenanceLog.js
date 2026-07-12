@@ -17,6 +17,7 @@ const maintenanceLogSchema = new mongoose.Schema(
     },
     openedAt: { type: Date, default: Date.now },
     closedAt: { type: Date, default: null },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
