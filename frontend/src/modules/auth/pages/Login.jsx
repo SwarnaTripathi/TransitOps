@@ -49,9 +49,9 @@ export default function Login() {
           <ForgotPassword onBack={() => setShowForgot(false)} />
         ) : (
           <>
-            <h1 style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>Welcome back</h1>
+            <h1 style={{ fontSize: "1.5rem", marginBottom: "0.25rem" }}>Sign in to your account</h1>
             <p style={{ color: "var(--text-secondary)", marginBottom: "1.75rem", fontSize: "0.9rem" }}>
-              Sign in to your fleet management dashboard
+              Enter your credentials to continue
             </p>
 
             <LoginForm onSubmit={handleLogin} loading={loading} error={error} />
@@ -64,6 +64,21 @@ export default function Login() {
               Forgot your password?
             </button>
 
+            {/* Role access legend — matches mockup Section 0 */}
+            <div style={{
+              marginTop: "1.5rem", padding: "1rem", fontSize: "0.75rem",
+              background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.12)",
+              borderRadius: "8px", lineHeight: 1.8
+            }}>
+              <div style={{ fontWeight: 600, color: "var(--accent-color)", marginBottom: "0.35rem", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.65rem" }}>
+                Access is scoped by role after login
+              </div>
+              <div style={{ color: "var(--text-secondary)" }}>🔵 Fleet Manager → Fleet, Maintenance</div>
+              <div style={{ color: "var(--text-secondary)" }}>🟢 Dispatcher → Dashboard, Trips</div>
+              <div style={{ color: "var(--text-secondary)" }}>🟡 Safety Officer → Drivers, Compliance</div>
+              <div style={{ color: "var(--text-secondary)" }}>🔴 Financial Analyst → Fuel & Expenses, Analytics</div>
+            </div>
+
             {/* Demo credentials hint */}
             <div className="demo-hint">
               <span className="demo-hint-title">Demo Credentials</span>
@@ -71,6 +86,14 @@ export default function Login() {
             </div>
           </>
         )}
+      </div>
+
+      {/* Footer branding */}
+      <div style={{
+        position: "absolute", bottom: "1.5rem", left: "50%", transform: "translateX(-50%)",
+        fontSize: "0.7rem", color: "var(--text-muted)", textAlign: "center", letterSpacing: "0.05em"
+      }}>
+        TRANSITOPS © 2026 • RBAC ENABLED
       </div>
     </div>
   );

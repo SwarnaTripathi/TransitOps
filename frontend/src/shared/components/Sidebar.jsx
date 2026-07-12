@@ -44,9 +44,15 @@ const allNavItems = [
   },
   {
     to: "/reports",
-    icon: "📊",
-    label: "Reports",
+    icon: "📈",
+    label: "Analytics",
     roles: ["Fleet Manager", "Safety Officer", "Financial Analyst"],
+  },
+  {
+    to: "/settings",
+    icon: "⚙️",
+    label: "Settings",
+    roles: ["Fleet Manager", "Safety Officer", "Financial Analyst", "Driver"],
   },
 ];
 

@@ -29,7 +29,8 @@ export default function Navbar() {
     "/trips": "Trip Dispatch",
     "/maintenance": "Maintenance",
     "/fuel": "Fuel & Expenses",
-    "/reports": "Reports",
+    "/reports": "Analytics",
+    "/settings": "Settings",
   };
 
   return (

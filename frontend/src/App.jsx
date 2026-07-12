@@ -14,6 +14,7 @@ import TripsPage from "./modules/trips/TripsPage.jsx";
 import MaintenancePage from "./modules/maintenance/MaintenancePage.jsx";
 import FuelExpensePage from "./modules/fuelExpense/FuelExpensePage.jsx";
 import ReportsPage from "./modules/reports/ReportsPage.jsx";
+import SettingsPage from "./modules/settings/SettingsPage.jsx";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/maintenance" element={<MaintenancePage />} />
               <Route path="/fuel" element={<FuelExpensePage />} />
               <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Route>
 
