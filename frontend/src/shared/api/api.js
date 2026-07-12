@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 // Helper to get auth headers with current role and name
 const getHeaders = () => {
@@ -121,7 +121,7 @@ export const api = {
     if (filters.status) params.append('status', filters.status);
     if (filters.vehicleId) params.append('vehicleId', filters.vehicleId);
     if (filters.driverId) params.append('driverId', filters.driverId);
-    
+
     const queryString = params.toString() ? `?${params.toString()}` : '';
     const res = await fetch(`${API_BASE_URL}/trips${queryString}`, {
       method: 'GET',
