@@ -116,8 +116,7 @@ export default function Login() {
               <div style={{ fontWeight: 600, color: "#facc15", marginBottom: "0.35rem", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.65rem" }}>
                 Access is scoped by role after login
               </div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Fleet Manager → Fleet, Maintenance</div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Dispatcher → Dashboard, Trips</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Admin → Fleet, Maintenance</div>
               <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Safety Officer → Drivers, Compliance</div>
               <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Financial Analyst → Fuel & Expenses</div>
             </div>

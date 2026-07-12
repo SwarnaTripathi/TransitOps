@@ -3,7 +3,7 @@ import { useState } from "react";
 export default function LoginForm({ onSubmit, loading, error }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Fleet Manager");
+  const [role, setRole] = useState("Admin");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
@@ -45,8 +45,7 @@ export default function LoginForm({ onSubmit, loading, error }) {
           value={role}
           onChange={(e) => setRole(e.target.value)}
         >
-          <option value="Fleet Manager">Fleet Manager</option>
-          <option value="Dispatcher">Dispatcher</option>
+          <option value="Admin">Admin</option>
           <option value="Safety Officer">Safety Officer</option>
           <option value="Financial Analyst">Financial Analyst</option>
           <option value="Driver">Driver</option>

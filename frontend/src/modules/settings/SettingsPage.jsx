@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import useAuth from '../auth/hooks/useAuth.js';
 
 const RBAC_MATRIX = [
-  { role: 'Fleet Manager',     fleet: 'full',  drivers: 'full',  trips: 'view',  fuelExp: 'view',  analytics: 'full'  },
-  { role: 'Dispatcher',        fleet: 'view',  drivers: 'view',  trips: 'full',  fuelExp: 'view',  analytics: 'view'  },
+  { role: 'Admin',     fleet: 'full',  drivers: 'full',  trips: 'view',  fuelExp: 'view',  analytics: 'full'  },
   { role: 'Safety Officer',    fleet: 'view',  drivers: 'full',  trips: 'view',  fuelExp: 'view',  analytics: 'view'  },
   { role: 'Financial Analyst', fleet: 'view',  drivers: 'view',  trips: 'view',  fuelExp: 'full',  analytics: 'full'  },
 ];
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'Fleet Manager';
+  const isAdmin = user?.role === 'Admin';
 
   const [depotName, setDepotName] = useState('Gandhinagar Depot GJ4');
   const [currency, setCurrency] = useState('INR');

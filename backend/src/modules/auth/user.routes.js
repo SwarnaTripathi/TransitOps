@@ -9,19 +9,19 @@ const router = express.Router();
 // All user management routes require authentication
 router.use(authGuard);
 
-// GET /api/users - List all users (Fleet Manager only)
-router.get("/", roleGuard("Fleet Manager"), listUsers);
+// GET /api/users - List all users (Admin only)
+router.get("/", roleGuard("Admin"), listUsers);
 
-// GET /api/users/:id - Get single user (Fleet Manager only)
-router.get("/:id", roleGuard("Fleet Manager"), getUser);
+// GET /api/users/:id - Get single user (Admin only)
+router.get("/:id", roleGuard("Admin"), getUser);
 
-// POST /api/users - Create user (Fleet Manager only)
-router.post("/", roleGuard("Fleet Manager"), validateCreateUser, addUser);
+// POST /api/users - Create user (Admin only)
+router.post("/", roleGuard("Admin"), validateCreateUser, addUser);
 
-// PUT /api/users/:id - Update user (Fleet Manager only)
-router.put("/:id", roleGuard("Fleet Manager"), validateUpdateUser, editUser);
+// PUT /api/users/:id - Update user (Admin only)
+router.put("/:id", roleGuard("Admin"), validateUpdateUser, editUser);
 
-// DELETE /api/users/:id - Deactivate user (Fleet Manager only)
-router.delete("/:id", roleGuard("Fleet Manager"), removeUser);
+// DELETE /api/users/:id - Deactivate user (Admin only)
+router.delete("/:id", roleGuard("Admin"), removeUser);
 
 export default router;

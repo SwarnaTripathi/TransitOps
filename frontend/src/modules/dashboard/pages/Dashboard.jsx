@@ -25,8 +25,8 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    // Only Fleet Manager uses this top-level data fetch
-    if (role !== "Fleet Manager") return;
+    // Only Admin uses this top-level data fetch
+    if (role !== "Admin") return;
 
     const loadData = async () => {
       try {
@@ -74,7 +74,7 @@ export default function Dashboard() {
     return <FinanceDashboard user={user} />;
   }
 
-  // Fleet Manager — full dashboard
+  // Admin — full dashboard
   if (loading) {
     return (
       <div className="dashboard-loading">
@@ -99,7 +99,7 @@ export default function Dashboard() {
         </div>
         <div className="role-badge manager-badge">
           <span className="role-badge-icon">⚙️</span>
-          <span>Fleet Manager</span>
+          <span>Admin</span>
         </div>
       </div>
 

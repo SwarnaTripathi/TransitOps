@@ -1,6 +1,6 @@
 export const roles = [
   {
-    name: 'Fleet Manager',
+    name: 'Admin',
     description: 'Full access to manage fleet operations, vehicles, drivers, and reports.',
     permissions: ['manage_vehicles', 'manage_drivers', 'manage_trips', 'view_reports', 'manage_users'],
     isActive: true,

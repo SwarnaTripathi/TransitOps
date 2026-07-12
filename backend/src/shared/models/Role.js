@@ -6,7 +6,7 @@ const roleSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      enum: ["Fleet Manager", "Driver", "Safety Officer", "Financial Analyst"],
+      enum: ["Admin", "Driver", "Safety Officer", "Financial Analyst"],
     },
     description: {
       type: String,

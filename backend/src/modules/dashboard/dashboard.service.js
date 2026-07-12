@@ -5,7 +5,7 @@ import { FuelLog, Expense } from "../../modules/fuelExpense/FuelExpense.js";
 import ActivityLog from "../../shared/models/ActivityLog.js";
 
 /**
- * Get dashboard statistics for Fleet Manager.
+ * Get dashboard statistics for Admin.
  * Full operational overview: vehicles, drivers, trips, utilization.
  */
 const getFleetManagerStats = async () => {
@@ -206,7 +206,7 @@ const getFinancialAnalystStats = async () => {
  */
 export const getDashboardStatsByRole = async (user) => {
   switch (user.role) {
-    case "Fleet Manager":
+    case "Admin":
       return getFleetManagerStats();
     case "Driver":
       return getDriverStats(user._id);
