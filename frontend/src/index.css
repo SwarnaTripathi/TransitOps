@@ -1435,3 +1435,15 @@ a {
   color: var(--color-danger);
 }
 
+/* Skeleton Loading Animation */
+@keyframes skeleton-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.25; }
+  100% { opacity: 0.6; }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s infinite ease-in-out;
+}
+
+
