@@ -16,7 +16,7 @@ export async function createFuelLog(req, res) {
     }
 
     // Pull this vehicle's last 5 logs to build the rolling-average baseline
-    const history = await FuelLog.find({ vehicleId })
+    const history = await FuelLog.find({ vehicleId, isDeleted: false })
       .sort({ date: -1 })
       .limit(5)
       .select("actualEfficiency");
@@ -55,7 +55,7 @@ export async function createFuelLog(req, res) {
 export async function listFuelLogs(req, res) {
   try {
     const { vehicleId, flagged } = req.query;
-    const filter = {};
+    const filter = { isDeleted: false };
     if (vehicleId) filter.vehicleId = vehicleId;
     if (flagged !== undefined) filter.flagged = flagged === "true";
 
@@ -93,7 +93,8 @@ export async function createExpense(req, res) {
 export async function listExpenses(req, res) {
   try {
     const { vehicleId } = req.query;
-    const filter = vehicleId ? { vehicleId } : {};
+    const filter = { isDeleted: false };
+    if (vehicleId) filter.vehicleId = vehicleId;
     const expenses = await Expense.find(filter).sort({ date: -1 });
     return res.json({ success: true, data: expenses });
   } catch (err) {

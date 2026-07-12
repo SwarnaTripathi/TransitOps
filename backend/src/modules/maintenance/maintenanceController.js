@@ -96,7 +96,7 @@ export async function closeMaintenance(req, res) {
 export async function listMaintenance(req, res) {
   try {
     const { status, vehicleId } = req.query;
-    const filter = {};
+    const filter = { isDeleted: false };
     if (status) filter.status = status;
     if (vehicleId) filter.vehicleId = vehicleId;
 

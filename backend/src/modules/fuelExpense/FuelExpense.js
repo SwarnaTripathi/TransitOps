@@ -13,6 +13,7 @@ const fuelLogSchema = new mongoose.Schema(
     expectedEfficiency: { type: Number },
     deviationPct: { type: Number },
     flagged: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -24,6 +25,7 @@ const expenseSchema = new mongoose.Schema(
     amount: { type: Number, required: true, min: 0 },
     date: { type: Date, default: Date.now },
     note: { type: String, default: "" },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
