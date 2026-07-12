@@ -56,7 +56,7 @@ const users = [
   {
     name: 'Priya Sharma',
     email: 'safety@transitops.com',
-    password: 'admin123',
+    password: 'safety123',
     role: 'Safety Officer',
     phone: '+91-9876543211',
     isActive: true,
@@ -64,7 +64,7 @@ const users = [
   {
     name: 'Amit Patel',
     email: 'driver@transitops.com',
-    password: 'admin123',
+    password: 'driver123',
     role: 'Driver',
     phone: '+91-9876543212',
     isActive: true,
@@ -72,7 +72,7 @@ const users = [
   {
     name: 'Sneha Reddy',
     email: 'finance@transitops.com',
-    password: 'admin123',
+    password: 'finance123',
     role: 'Financial Analyst',
     phone: '+91-9876543213',
     isActive: true,
@@ -80,7 +80,7 @@ const users = [
   {
     name: 'Vikram Singh',
     email: 'driver2@transitops.com',
-    password: 'admin123',
+    password: 'driver123',
     role: 'Driver',
     phone: '+91-9876543214',
     isActive: true,
@@ -88,7 +88,7 @@ const users = [
   {
     name: 'Ananya Gupta',
     email: 'manager@transitops.com',
-    password: 'admin123',
+    password: 'manager123',
     role: 'Fleet Manager',
     phone: '+91-9876543215',
     isActive: true,
@@ -353,9 +353,9 @@ const seedDatabase = async () => {
     console.log(`   Activity Logs: ${logCount}`);
     console.log('─'.repeat(40));
 
-    console.log('\n📧 Login credentials (all passwords: admin123):');
-    createdUsers.forEach((u) => {
-      console.log(`   ${u.role.padEnd(20)} → ${u.email}`);
+    console.log('\n📧 Login credentials:');
+    users.forEach((u) => {
+      console.log(`   ${u.role.padEnd(20)} → ${u.email.padEnd(28)} / ${u.password}`);
     });
 
   } catch (error) {

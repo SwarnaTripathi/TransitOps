@@ -8,6 +8,10 @@ export default function Sidebar() {
     { to: "/dashboard", icon: "📊", label: "Dashboard" },
     { to: "/vehicles", icon: "🚛", label: "Vehicles Registry" },
     { to: "/drivers", icon: "👥", label: "Driver Profiles" },
+    { to: "/trips", icon: "📋", label: "Trip Dispatch" },
+    { to: "/maintenance", icon: "🔧", label: "Maintenance" },
+    { to: "/fuel", icon: "⛽", label: "Fuel & Expenses" },
+    { to: "/reports", icon: "📊", label: "Reports" },
   ];
 
   return (

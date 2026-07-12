@@ -22,14 +22,21 @@ export default function Navbar() {
       .slice(0, 2);
   };
 
+  const pageTitles = {
+    "/dashboard": "Dashboard",
+    "/vehicles": "Vehicle Registry",
+    "/drivers": "Driver Profiles",
+    "/trips": "Trip Dispatch",
+    "/maintenance": "Maintenance",
+    "/fuel": "Fuel & Expenses",
+    "/reports": "Reports",
+  };
+
   return (
     <header className="navbar">
       <div className="navbar-left">
         <h2 className="navbar-title">
-          {location.pathname === "/dashboard" && "Dashboard"}
-          {location.pathname === "/vehicles" && "Vehicle Registry"}
-          {location.pathname === "/drivers" && "Driver Profiles"}
-          {!["/dashboard", "/vehicles", "/drivers"].includes(location.pathname) && "TransitOps"}
+          {pageTitles[location.pathname] || "TransitOps"}
         </h2>
       </div>
 
