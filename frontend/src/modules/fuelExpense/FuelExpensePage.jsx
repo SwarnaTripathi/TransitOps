@@ -6,6 +6,7 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
   const [fuelLogs, setFuelLogs] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const [maintenanceLogs, setMaintenanceLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFuelModal, setShowFuelModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
@@ -23,13 +24,14 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [fRes, eRes, vRes] = await Promise.all([
+      const [fRes, eRes, vRes, mRes] = await Promise.all([
         api.getFuelLogs(showAnomaliesOnly ? 'flagged=true' : ''),
-        api.getExpenses(), api.getVehicles()
+        api.getExpenses(), api.getVehicles(), api.getMaintenanceLogs()
       ]);
       if (fRes.success) setFuelLogs(fRes.data);
       if (eRes.success) setExpenses(eRes.data);
       if (vRes.success) setVehicles(vRes.data);
+      if (mRes.success) setMaintenanceLogs(mRes.data);
     } catch (err) { onShowToast(err.message, 'error'); }
     finally { setLoading(false); }
   };
@@ -58,6 +60,8 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
   const flaggedCount = fuelLogs.filter(l => l.flagged).length;
   const totalFuelCost = fuelLogs.reduce((s, l) => s + l.cost, 0);
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalMaintenanceCost = maintenanceLogs.reduce((s, m) => s + (m.cost || 0), 0);
+  const totalOperationalCost = totalFuelCost + totalMaintenanceCost;
 
   return (
     <div>
@@ -74,14 +78,19 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
         )}
       </div>
 
-      <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: '2rem' }}>
+      <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(5,1fr)', marginBottom: '2rem' }}>
         <div className="glass-card"><div className="kpi-title">Total Fuel Logs</div><div className="kpi-value">{fuelLogs.length}</div></div>
-        <div className="glass-card"><div className="kpi-title">Fuel Spend</div><div className="kpi-value" style={{ color: 'var(--accent-color)' }}>${totalFuelCost.toLocaleString()}</div></div>
+        <div className="glass-card"><div className="kpi-title">Fuel Spend</div><div className="kpi-value" style={{ color: 'var(--accent-color)' }}>₹{totalFuelCost.toLocaleString()}</div></div>
         <div className="glass-card" style={{ borderColor: flaggedCount > 0 ? 'rgba(239,68,68,0.4)' : 'var(--glass-border)' }}>
           <div className="kpi-title">🚨 Anomalies</div>
           <div className="kpi-value" style={{ color: flaggedCount > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>{flaggedCount}</div>
         </div>
-        <div className="glass-card"><div className="kpi-title">Other Expenses</div><div className="kpi-value">${totalExpenses.toLocaleString()}</div></div>
+        <div className="glass-card"><div className="kpi-title">Other Expenses</div><div className="kpi-value">₹{totalExpenses.toLocaleString()}</div></div>
+        <div className="glass-card" style={{ borderLeft: '3px solid var(--color-warning)' }}>
+          <div className="kpi-title">TOTAL OPERATIONAL COST</div>
+          <div className="kpi-value" style={{ color: 'var(--color-warning)' }}>₹{totalOperationalCost.toLocaleString()}</div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>Fuel + Maintenance</div>
+        </div>
       </div>
 
       <div className="controls-bar">
@@ -101,12 +110,12 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
           <div className="glass-card" style={{ textAlign: 'center', padding: '4rem' }}><h3 style={{ color: 'var(--text-secondary)' }}>No fuel logs yet</h3></div>
         ) : (
           <div className="table-container"><table className="custom-table"><thead><tr>
-            <th>Vehicle</th><th>Liters</th><th>Cost ($)</th><th>Distance</th><th>Efficiency</th><th>Status</th><th>Date</th>
+            <th>Vehicle</th><th>Liters</th><th>Cost (₹)</th><th>Distance</th><th>Efficiency</th><th>Status</th><th>Date</th>
           </tr></thead><tbody>
             {fuelLogs.map(log => (
               <tr key={log._id} style={log.flagged ? { background: 'rgba(239,68,68,0.06)' } : {}}>
                 <td style={{ fontWeight: 600, color: '#fff' }}>{log.vehicleId?.regNumber || 'N/A'}</td>
-                <td>{log.liters}</td><td>${log.cost?.toLocaleString()}</td><td>{log.distance} km</td>
+                <td>{log.liters} L</td><td>₹{log.cost?.toLocaleString()}</td><td>{log.distance} km</td>
                 <td>{log.actualEfficiency?.toFixed(1) || '—'} km/L</td>
                 <td>{log.flagged ? <span className="badge badge-danger-pulse">⚠ {log.deviationPct}%↓</span> : <span className="badge badge-available">Normal</span>}</td>
                 <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{new Date(log.date || log.createdAt).toLocaleDateString()}</td>
@@ -119,13 +128,13 @@ export default function FuelExpensePage({ onShowToast, userRole }) {
           <div className="glass-card" style={{ textAlign: 'center', padding: '4rem' }}><h3 style={{ color: 'var(--text-secondary)' }}>No expenses yet</h3></div>
         ) : (
           <div className="table-container"><table className="custom-table"><thead><tr>
-            <th>Vehicle</th><th>Type</th><th>Amount ($)</th><th>Note</th><th>Date</th>
+            <th>Vehicle</th><th>Type</th><th>Amount (₹)</th><th>Note</th><th>Date</th>
           </tr></thead><tbody>
             {expenses.map(exp => (
               <tr key={exp._id}>
                 <td style={{ fontWeight: 600, color: '#fff' }}>{exp.vehicleId || 'N/A'}</td>
                 <td><span className="badge badge-ontrip">{exp.type}</span></td>
-                <td>${exp.amount?.toLocaleString()}</td>
+                <td>₹{exp.amount?.toLocaleString()}</td>
                 <td style={{ color: 'var(--text-secondary)' }}>{exp.note || '—'}</td>
                 <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{new Date(exp.date || exp.createdAt).toLocaleDateString()}</td>
               </tr>

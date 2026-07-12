@@ -8,30 +8,84 @@ export default function ReportsPage({ onShowToast, userRole }) {
   const [costData, setCostData] = useState([]);
   const [roiData, setRoiData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [summaryLoading, setSummaryLoading] = useState(true);
+
+  // Persistent summary KPIs (always visible at top)
+  const [summaryKPIs, setSummaryKPIs] = useState({
+    avgFuelEfficiency: 0,
+    utilizationPct: 0,
+    totalOperationalCost: 0,
+    avgRoi: 0
+  });
 
   const isFinance = userRole === 'fleet_manager' || userRole === 'financial_analyst';
 
-  useEffect(() => { loadReport(activeReport); }, [activeReport, userRole]);
+  // Load all summary KPIs on mount
+  useEffect(() => {
+    const loadSummary = async () => {
+      setSummaryLoading(true);
+      try {
+        const [uRes, fRes, cRes, rRes] = await Promise.all([
+          api.getUtilizationReport(),
+          api.getFuelEfficiencyReport(),
+          api.getCostReport(),
+          api.getRoiReport()
+        ]);
 
-  const loadReport = async (report) => {
-    setLoading(true);
-    try {
-      if (report === 'utilization') {
-        const res = await api.getUtilizationReport();
-        if (res.success) setUtilization(res.data);
-      } else if (report === 'fuel') {
-        const res = await api.getFuelEfficiencyReport();
-        if (res.success) setFuelEff(res.data);
-      } else if (report === 'cost') {
-        const res = await api.getCostReport();
-        if (res.success) setCostData(res.data);
-      } else if (report === 'roi') {
-        const res = await api.getRoiReport();
-        if (res.success) setRoiData(res.data);
-      }
-    } catch (err) { onShowToast(err.message, 'error'); }
-    finally { setLoading(false); }
-  };
+        const kpis = { avgFuelEfficiency: 0, utilizationPct: 0, totalOperationalCost: 0, avgRoi: 0 };
+
+        if (uRes.success && uRes.data) {
+          kpis.utilizationPct = uRes.data.utilizationPct || 0;
+          setUtilization(uRes.data);
+        }
+        if (fRes.success && fRes.data?.length) {
+          kpis.avgFuelEfficiency = (fRes.data.reduce((s, v) => s + v.avgEfficiency, 0) / fRes.data.length).toFixed(1);
+          setFuelEff(fRes.data);
+        }
+        if (cRes.success && cRes.data?.length) {
+          kpis.totalOperationalCost = cRes.data.reduce((s, c) => s + c.totalOperationalCost, 0);
+          setCostData(cRes.data);
+        }
+        if (rRes.success && rRes.data?.length) {
+          kpis.avgRoi = ((rRes.data.reduce((s, v) => s + v.roi, 0) / rRes.data.length) * 100).toFixed(1);
+          setRoiData(rRes.data);
+        }
+
+        setSummaryKPIs(kpis);
+      } catch (err) { console.error('Summary load error:', err); }
+      finally { setSummaryLoading(false); setLoading(false); }
+    };
+    loadSummary();
+  }, [userRole]);
+
+  // Load individual report when tab changes (data may already be cached)
+  useEffect(() => {
+    const loadReport = async () => {
+      if (activeReport === 'utilization' && utilization) return;
+      if (activeReport === 'fuel' && fuelEff.length) return;
+      if (activeReport === 'cost' && costData.length) return;
+      if (activeReport === 'roi' && roiData.length) return;
+
+      setLoading(true);
+      try {
+        if (activeReport === 'utilization') {
+          const res = await api.getUtilizationReport();
+          if (res.success) setUtilization(res.data);
+        } else if (activeReport === 'fuel') {
+          const res = await api.getFuelEfficiencyReport();
+          if (res.success) setFuelEff(res.data);
+        } else if (activeReport === 'cost') {
+          const res = await api.getCostReport();
+          if (res.success) setCostData(res.data);
+        } else if (activeReport === 'roi') {
+          const res = await api.getRoiReport();
+          if (res.success) setRoiData(res.data);
+        }
+      } catch (err) { onShowToast(err.message, 'error'); }
+      finally { setLoading(false); }
+    };
+    loadReport();
+  }, [activeReport]);
 
   const maxCost = costData.length > 0 ? Math.max(...costData.map(c => c.totalOperationalCost)) : 1;
 
@@ -39,7 +93,7 @@ export default function ReportsPage({ onShowToast, userRole }) {
     <div>
       <div className="page-header">
         <div>
-          <h2>📊 Reports &amp; Analytics</h2>
+          <h2>📊 Analytics</h2>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Fleet efficiency, operational cost, and ROI insights.</p>
         </div>
         {isFinance && (
@@ -47,6 +101,42 @@ export default function ReportsPage({ onShowToast, userRole }) {
         )}
       </div>
 
+      {/* ===== PERSISTENT SUMMARY KPI ROW (matches mockup Section 7) ===== */}
+      <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: '2rem' }}>
+        <div className="glass-card" style={{ cursor: 'pointer', borderBottom: activeReport === 'fuel' ? '2px solid var(--accent-color)' : 'none' }}
+          onClick={() => setActiveReport('fuel')}>
+          <div className="kpi-title">FUEL EFFICIENCY</div>
+          <div className="kpi-value" style={{ color: 'var(--color-info)' }}>
+            {summaryLoading ? '...' : `${summaryKPIs.avgFuelEfficiency} km/l`}
+          </div>
+        </div>
+        <div className="glass-card" style={{ cursor: 'pointer', borderBottom: activeReport === 'utilization' ? '2px solid var(--accent-color)' : 'none' }}
+          onClick={() => setActiveReport('utilization')}>
+          <div className="kpi-title">FLEET UTILIZATION</div>
+          <div className="kpi-value" style={{ color: 'var(--color-success)' }}>
+            {summaryLoading ? '...' : `${summaryKPIs.utilizationPct}%`}
+          </div>
+        </div>
+        <div className="glass-card" style={{ cursor: 'pointer', borderBottom: activeReport === 'cost' ? '2px solid var(--accent-color)' : 'none' }}
+          onClick={() => setActiveReport('cost')}>
+          <div className="kpi-title">OPERATIONAL COST</div>
+          <div className="kpi-value" style={{ color: 'var(--color-warning)' }}>
+            {summaryLoading ? '...' : `₹${summaryKPIs.totalOperationalCost.toLocaleString()}`}
+          </div>
+        </div>
+        <div className="glass-card" style={{ cursor: 'pointer', borderBottom: activeReport === 'roi' ? '2px solid var(--accent-color)' : 'none' }}
+          onClick={() => setActiveReport('roi')}>
+          <div className="kpi-title">VEHICLE ROI</div>
+          <div className="kpi-value" style={{ color: summaryKPIs.avgRoi > 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+            {summaryLoading ? '...' : `${summaryKPIs.avgRoi}%`}
+          </div>
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+            (Revenue − Costs) / Acquisition
+          </div>
+        </div>
+      </div>
+
+      {/* ===== REPORT TAB BUTTONS ===== */}
       <div className="controls-bar" style={{ flexWrap: 'wrap' }}>
         {['utilization', 'fuel', 'cost', 'roi'].map(r => (
           <button key={r} className={`btn ${activeReport === r ? 'btn-primary' : 'btn-secondary'}`}
@@ -56,6 +146,7 @@ export default function ReportsPage({ onShowToast, userRole }) {
         ))}
       </div>
 
+      {/* ===== DETAILED REPORT PANELS ===== */}
       {loading ? (
         <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
           <div style={{ color: 'var(--text-secondary)' }}>Generating report...</div>
@@ -67,7 +158,6 @@ export default function ReportsPage({ onShowToast, userRole }) {
             <div className="glass-card"><div className="kpi-title">On Trip</div><div className="kpi-value" style={{ color: 'var(--color-info)' }}>{utilization.onTrip}</div></div>
             <div className="glass-card"><div className="kpi-title">Utilization Rate</div><div className="kpi-value" style={{ color: 'var(--color-success)' }}>{utilization.utilizationPct}%</div></div>
           </div>
-          {/* Visual gauge */}
           <div className="glass-card" style={{ marginTop: '1.5rem' }}>
             <h3 style={{ marginBottom: '1rem' }}>Fleet Utilization Gauge</h3>
             <div style={{ background: 'var(--bg-tertiary)', borderRadius: '12px', height: '32px', overflow: 'hidden', position: 'relative' }}>
@@ -125,9 +215,9 @@ export default function ReportsPage({ onShowToast, userRole }) {
               {costData.map(c => (
                 <tr key={c.vehicleId}>
                   <td style={{ fontWeight: 600, color: '#fff' }}>{c.regNumber}</td>
-                  <td>${c.fuelCost.toLocaleString()}</td>
-                  <td>${c.maintenanceCost.toLocaleString()}</td>
-                  <td style={{ fontWeight: 600, color: 'var(--color-warning)' }}>${c.totalOperationalCost.toLocaleString()}</td>
+                  <td>₹{c.fuelCost.toLocaleString()}</td>
+                  <td>₹{c.maintenanceCost.toLocaleString()}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--color-warning)' }}>₹{c.totalOperationalCost.toLocaleString()}</td>
                   <td>
                     <div style={{ display: 'flex', borderRadius: '6px', height: '18px', overflow: 'hidden', background: 'var(--bg-tertiary)' }}>
                       <div style={{ width: `${maxCost > 0 ? (c.fuelCost / maxCost) * 100 : 0}%`, background: 'var(--color-info)', height: '100%' }} title="Fuel" />
@@ -157,7 +247,7 @@ export default function ReportsPage({ onShowToast, userRole }) {
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: 600 }}>{v.regNumber}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                        Revenue: ${v.revenue.toLocaleString()} | Costs: ${(v.fuelCost + v.maintenanceCost).toLocaleString()}
+                        Revenue: ₹{v.revenue.toLocaleString()} | Costs: ₹{(v.fuelCost + v.maintenanceCost).toLocaleString()}
                       </div>
                     </div>
                     <div style={{

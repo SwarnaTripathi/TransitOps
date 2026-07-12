@@ -10,8 +10,11 @@ export default function MaintenancePage({ onShowToast, userRole }) {
 
   // Form state
   const [vehicleId, setVehicleId] = useState('');
+  const [serviceType, setServiceType] = useState('');
   const [description, setDescription] = useState('');
   const [cost, setCost] = useState('');
+
+  const SERVICE_TYPES = ['Oil Change', 'Tyre Replace', 'Engine Repair', 'Brake Inspection', 'Battery Service', 'General Service'];
 
   const isManager = userRole === 'fleet_manager' || userRole === 'safety_officer';
 
@@ -35,16 +38,16 @@ export default function MaintenancePage({ onShowToast, userRole }) {
 
   const handleOpen = async (e) => {
     e.preventDefault();
-    if (!vehicleId || !description || !cost) {
+    if (!vehicleId || !serviceType || !cost) {
       onShowToast('Please fill all fields', 'error');
       return;
     }
     try {
-      const res = await api.openMaintenance({ vehicleId, description, cost: Number(cost) });
+      const res = await api.openMaintenance({ vehicleId, type: serviceType, description, cost: Number(cost) });
       if (res.success) {
         onShowToast('Maintenance log opened — vehicle moved to In Shop');
         setShowModal(false);
-        setVehicleId(''); setDescription(''); setCost('');
+        setVehicleId(''); setServiceType(''); setDescription(''); setCost('');
         fetchData();
       }
     } catch (err) {
@@ -76,7 +79,7 @@ export default function MaintenancePage({ onShowToast, userRole }) {
     <div>
       <div className="page-header">
         <div>
-          <h2>🔧 Maintenance Tracker</h2>
+          <h2>🔧 Maintenance</h2>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
             Monitor shop visits, close records to release vehicles back to the fleet.
           </p>
@@ -127,10 +130,11 @@ export default function MaintenancePage({ onShowToast, userRole }) {
             <thead>
               <tr>
                 <th>Vehicle</th>
-                <th>Description</th>
-                <th>Cost ($)</th>
+                <th>Service Type</th>
+                <th>Notes</th>
+                <th>Cost (₹)</th>
                 <th>Status</th>
-                <th>Created</th>
+                <th>Date</th>
                 {isManager && <th>Actions</th>}
               </tr>
             </thead>
@@ -140,15 +144,16 @@ export default function MaintenancePage({ onShowToast, userRole }) {
                   <td style={{ fontWeight: 600, color: '#fff' }}>
                     {log.vehicleId?.regNumber || 'N/A'}
                   </td>
-                  <td>{log.description}</td>
-                  <td>${log.cost?.toLocaleString()}</td>
+                  <td><span className="badge badge-ontrip">{log.type || '—'}</span></td>
+                  <td style={{ color: 'var(--text-secondary)' }}>{log.description || '—'}</td>
+                  <td>₹{log.cost?.toLocaleString()}</td>
                   <td>
                     <span className={`badge ${log.status === 'Active' ? 'badge-inshop' : 'badge-available'}`}>
-                      {log.status}
+                      {log.status === 'Active' ? 'In Shop' : 'Completed'}
                     </span>
                   </td>
                   <td style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                    {new Date(log.createdAt).toLocaleDateString()}
+                    {new Date(log.openedAt || log.createdAt).toLocaleDateString()}
                   </td>
                   {isManager && (
                     <td>
@@ -186,18 +191,27 @@ export default function MaintenancePage({ onShowToast, userRole }) {
                 </select>
               </div>
               <div className="form-group">
-                <label>Description *</label>
-                <input type="text" className="form-input" placeholder="e.g. Engine overhaul"
-                  value={description} onChange={e => setDescription(e.target.value)} required />
+                <label>Service Type *</label>
+                <select className="form-select" value={serviceType} onChange={e => setServiceType(e.target.value)} required>
+                  <option value="">Select service type…</option>
+                  {SERVICE_TYPES.map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
-                <label>Estimated Cost ($) *</label>
+                <label>Service Notes</label>
+                <input type="text" className="form-input" placeholder="e.g. Front left tyre worn out"
+                  value={description} onChange={e => setDescription(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Cost (₹) *</label>
                 <input type="number" className="form-input" placeholder="e.g. 2500"
                   value={cost} onChange={e => setCost(e.target.value)} required />
               </div>
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Open Record</button>
+                <button type="submit" className="btn btn-primary">Save</button>
               </div>
             </form>
           </div>
