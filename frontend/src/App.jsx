@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import VehiclesPage from './modules/vehicles/VehiclesPage';
 import DriversPage from './modules/drivers/DriversPage';
 import DashboardView from './shared/components/DashboardView';
+import TripsPage from './modules/trips/TripsPage';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -66,6 +67,13 @@ export default function App() {
           >
             <span>👥 Driver Profiles</span>
           </div>
+
+          <div 
+            className={`nav-link ${activeTab === 'trips' ? 'active' : ''}`}
+            onClick={() => setActiveTab('trips')}
+          >
+            <span>📋 Trip Dispatch</span>
+          </div>
         </nav>
 
         {/* Role Switcher for Testing / Assessment */}
@@ -98,6 +106,10 @@ export default function App() {
         
         {activeTab === 'drivers' && (
           <DriversPage onShowToast={showToast} userRole={role} />
+        )}
+
+        {activeTab === 'trips' && (
+          <TripsPage onShowToast={showToast} userRole={role} />
         )}
       </main>
 
