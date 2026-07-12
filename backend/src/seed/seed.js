@@ -15,6 +15,7 @@ import { users } from './users.seed.js';
 import { vehicles } from './vehicles.seed.js';
 import { drivers } from './drivers.seed.js';
 import { seedActivityLogs } from './activity.seed.js';
+import { seedTrips } from './trips.seed.js';
 
 dotenv.config();
 
@@ -71,53 +72,8 @@ const seedDatabase = async () => {
 
     // ── Seed Trips ────────────────────────────────────────────────────
     console.log('🚚 Seeding trips...');
-    const onTripVehicles = createdVehicles.filter(v => v.status === 'On Trip');
-    const onTripDrivers = createdDrivers.filter(d => d.status === 'On Trip');
-    const availableVehicles = createdVehicles.filter(v => v.status === 'Available');
-    const availableDrivers = createdDrivers.filter(d => d.status === 'Available');
-
-    const trips = [];
-    for (let i = 0; i < Math.min(onTripVehicles.length, onTripDrivers.length); i++) {
-      trips.push({
-        source: 'Terminal ' + String.fromCharCode(65 + i),
-        destination: 'Terminal ' + String.fromCharCode(66 + i),
-        vehicleId: onTripVehicles[i]._id,
-        driverId: onTripDrivers[i]._id,
-        cargoWeight: Math.round(onTripVehicles[i].maxLoadCapacity * 0.8),
-        plannedDistance: 120 + i * 30,
-        status: 'Dispatched',
-        dispatchedAt: new Date(Date.now() - 24 * 60 * 60 * 1000)
-      });
-    }
-    if (availableVehicles[0] && availableDrivers[0]) {
-      trips.push({
-        source: 'Depot A',
-        destination: 'Warehouse South',
-        vehicleId: availableVehicles[0]._id,
-        driverId: availableDrivers[0]._id,
-        cargoWeight: Math.round(availableVehicles[0].maxLoadCapacity * 0.5),
-        plannedDistance: 150,
-        actualDistance: 155,
-        fuelConsumed: 12.5,
-        revenue: 450,
-        status: 'Completed',
-        dispatchedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-        completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-      });
-    }
-    if (availableVehicles[1] && availableDrivers[1]) {
-      trips.push({
-        source: 'Depot A',
-        destination: 'Port East',
-        vehicleId: availableVehicles[1]._id,
-        driverId: availableDrivers[1]._id,
-        cargoWeight: Math.round(availableVehicles[1].maxLoadCapacity * 0.3),
-        plannedDistance: 80,
-        status: 'Draft'
-      });
-    }
-    const createdTrips = await Trip.insertMany(trips);
-    console.log(`   ✅ ${createdTrips.length} trips created`);
+    const tripCount = await seedTrips(createdVehicles, createdDrivers);
+    console.log(`   ✅ ${tripCount} trips created`);
 
     // ── Summary ───────────────────────────────────────────────────────
     console.log('\n🎉 Database seeded successfully!');
@@ -126,7 +82,7 @@ const seedDatabase = async () => {
     console.log(`   Users:         ${createdUsers.length}`);
     console.log(`   Vehicles:      ${createdVehicles.length}`);
     console.log(`   Drivers:       ${createdDrivers.length}`);
-    console.log(`   Trips:         ${createdTrips.length}`);
+    console.log(`   Trips:         ${tripCount}`);
     console.log(`   Activity Logs: ${logCount}`);
     console.log('─'.repeat(40));
 
