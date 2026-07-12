@@ -3,6 +3,20 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
+// Route imports
+import authRoutes from "./modules/auth/auth.routes.js";
+import userRoutes from "./modules/auth/user.routes.js";
+import vehicleRoutes from "./modules/vehicles/vehicleRoutes.js";
+import driverRoutes from "./modules/drivers/driverRoutes.js";
+import tripRoutes from "./modules/trips/tripRoutes.js";
+import maintenanceRoutes from "./modules/maintenance/maintenanceRoutes.js";
+import fuelExpenseRoutes from "./modules/fuelExpense/fuelExpenseRoutes.js";
+import reportRoutes from "./modules/reports/reportRoutes.js";
+import activityRoutes from "./shared/routes/activityRoutes.js";
+
+// Middleware imports
+import { errorHandler } from "./shared/middleware/errorHandler.js";
+
 // Database
 dotenv.config();
 connectDB();
@@ -38,30 +52,14 @@ app.use((req, res, next) => {
 // Routes
 // ===========================
 
-import authRoutes from "./modules/auth/auth.routes.js";
-import userRoutes from "./modules/auth/user.routes.js";
-
-import vehicleRoutes from "./modules/vehicles/vehicleRoutes.js";
-import driverRoutes from "./modules/drivers/driverRoutes.js";
-import tripRoutes from "./modules/trips/tripRoutes.js";
-
-import maintenanceRoutes from "./modules/maintenance/maintenanceRoutes.js";
-import fuelExpenseRoutes from "./modules/fuelExpense/fuelExpenseRoutes.js";
-import reportRoutes from "./modules/reports/reportRoutes.js";
-
-import activityRoutes from "./shared/routes/activityRoutes.js";
-
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/drivers", driverRoutes);
 app.use("/api/trips", tripRoutes);
-
 app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/fuel", fuelExpenseRoutes);
 app.use("/api/reports", reportRoutes);
-
 app.use("/api/activity-logs", activityRoutes);
 
 // ===========================
@@ -108,8 +106,6 @@ app.use((req, res) => {
 // ===========================
 // Global Error Handler
 // ===========================
-
-import { errorHandler } from "./shared/middleware/errorHandler.js";
 
 app.use(errorHandler);
 
