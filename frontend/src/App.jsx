@@ -3,6 +3,9 @@ import VehiclesPage from './modules/vehicles/VehiclesPage';
 import DriversPage from './modules/drivers/DriversPage';
 import DashboardView from './shared/components/DashboardView';
 import TripsPage from './modules/trips/TripsPage';
+import MaintenancePage from './modules/maintenance/MaintenancePage';
+import FuelExpensePage from './modules/fuelExpense/FuelExpensePage';
+import ReportsPage from './modules/reports/ReportsPage';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -74,6 +77,27 @@ export default function App() {
           >
             <span>📋 Trip Dispatch</span>
           </div>
+
+          <div 
+            className={`nav-link ${activeTab === 'maintenance' ? 'active' : ''}`}
+            onClick={() => setActiveTab('maintenance')}
+          >
+            <span>🔧 Maintenance</span>
+          </div>
+
+          <div 
+            className={`nav-link ${activeTab === 'fuel' ? 'active' : ''}`}
+            onClick={() => setActiveTab('fuel')}
+          >
+            <span>⛽ Fuel & Expenses</span>
+          </div>
+
+          <div 
+            className={`nav-link ${activeTab === 'reports' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reports')}
+          >
+            <span>📊 Reports</span>
+          </div>
         </nav>
 
         {/* Role Switcher for Testing / Assessment */}
@@ -110,6 +134,18 @@ export default function App() {
 
         {activeTab === 'trips' && (
           <TripsPage onShowToast={showToast} userRole={role} />
+        )}
+
+        {activeTab === 'maintenance' && (
+          <MaintenancePage onShowToast={showToast} userRole={role} />
+        )}
+
+        {activeTab === 'fuel' && (
+          <FuelExpensePage onShowToast={showToast} userRole={role} />
+        )}
+
+        {activeTab === 'reports' && (
+          <ReportsPage onShowToast={showToast} userRole={role} />
         )}
       </main>
 

@@ -156,6 +156,106 @@ export const api = {
       headers: getHeaders()
     });
     return handleResponse(res);
+  },
+
+  // Maintenance
+  getMaintenanceLogs: async () => {
+    const res = await fetch(`${API_BASE_URL}/maintenance`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  openMaintenance: async (data) => {
+    const res = await fetch(`${API_BASE_URL}/maintenance`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return handleResponse(res);
+  },
+
+  closeMaintenance: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/maintenance/${id}/close`, {
+      method: 'PATCH',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  // Fuel Logs
+  getFuelLogs: async (params = '') => {
+    const res = await fetch(`${API_BASE_URL}/fuel/fuel-logs${params ? '?' + params : ''}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  createFuelLog: async (data) => {
+    const res = await fetch(`${API_BASE_URL}/fuel/fuel-logs`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return handleResponse(res);
+  },
+
+  // Expenses
+  getExpenses: async () => {
+    const res = await fetch(`${API_BASE_URL}/fuel/expenses`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  createExpense: async (data) => {
+    const res = await fetch(`${API_BASE_URL}/fuel/expenses`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return handleResponse(res);
+  },
+
+  // Reports
+  getFuelEfficiencyReport: async () => {
+    const res = await fetch(`${API_BASE_URL}/reports/fuel-efficiency`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  getUtilizationReport: async () => {
+    const res = await fetch(`${API_BASE_URL}/reports/utilization`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  getCostReport: async () => {
+    const res = await fetch(`${API_BASE_URL}/reports/cost`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  getRoiReport: async () => {
+    const res = await fetch(`${API_BASE_URL}/reports/roi`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  exportCsv: () => {
+    const role = localStorage.getItem('transitops_role') || 'fleet_manager';
+    const name = localStorage.getItem('transitops_username') || 'Demo User';
+    window.open(`${API_BASE_URL}/reports/export.csv?role=${role}&name=${name}`, '_blank');
   }
 };
-
