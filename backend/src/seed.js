@@ -70,54 +70,55 @@ const seedData = async () => {
     console.log('Seeded initial activity logs.');
 
     // Seed Trips
-    const trips = [
-      {
-        source: 'Depot A',
-        destination: 'Depot B',
-        vehicleId: seededVehicles[1]._id, // VAN-002 (On Trip)
-        driverId: seededDrivers[3]._id,  // David Smith (On Trip)
-        cargoWeight: 500,
-        plannedDistance: 120,
-        status: 'Dispatched',
-        dispatchedAt: addDays(today, -2)
-      },
-      {
-        source: 'Warehouse North',
-        destination: 'Retail Center West',
-        vehicleId: seededVehicles[4]._id, // TRK-002 (On Trip)
-        driverId: seededDrivers[5]._id,  // Sarah Patel (On Trip)
-        cargoWeight: 4500,
-        plannedDistance: 350,
-        status: 'Dispatched',
-        dispatchedAt: addDays(today, -1)
-      },
-      {
-        source: 'Depot A',
-        destination: 'Warehouse South',
-        vehicleId: seededVehicles[0]._id, // VAN-001 (Available)
-        driverId: seededDrivers[0]._id,  // Alex Johnson (Available)
-        cargoWeight: 800,
-        plannedDistance: 150,
-        actualDistance: 155,
-        fuelConsumed: 12.5,
-        revenue: 450,
-        status: 'Completed',
-        dispatchedAt: addDays(today, -3),
-        completedAt: addDays(today, -3)
-      },
-      {
-        source: 'Depot A',
-        destination: 'Port East',
-        vehicleId: seededVehicles[6]._id, // EVN-001 (Available)
-        driverId: seededDrivers[6]._id,  // Charles Brown (Available)
-        cargoWeight: 350,
-        plannedDistance: 80,
-        status: 'Draft'
-      }
-    ];
+    // Seed Trips
+const trips = [
+  {
+    source: 'Depot A',
+    destination: 'Depot B',
+    vehicleId: seededVehicles[1]._id, // VAN-002 (On Trip)
+    driverId: seededDrivers[3]._id, // David Smith (On Trip)
+    cargoWeight: 500,
+    plannedDistance: 120,
+    status: 'Dispatched',
+    dispatchedAt: addDays(-2)
+  },
+  {
+    source: 'Warehouse North',
+    destination: 'Retail Center West',
+    vehicleId: seededVehicles[4]._id, // TRK-002 (On Trip)
+    driverId: seededDrivers[5]._id, // Sarah Patel (On Trip)
+    cargoWeight: 4500,
+    plannedDistance: 350,
+    status: 'Dispatched',
+    dispatchedAt: addDays(-1)
+  },
+  {
+    source: 'Depot A',
+    destination: 'Warehouse South',
+    vehicleId: seededVehicles[0]._id, // VAN-001 (Available)
+    driverId: seededDrivers[0]._id, // Alex Johnson (Available)
+    cargoWeight: 800,
+    plannedDistance: 150,
+    actualDistance: 155,
+    fuelConsumed: 12.5,
+    revenue: 450,
+    status: 'Completed',
+    dispatchedAt: addDays(-3),
+    completedAt: addDays(-3)
+  },
+  {
+    source: 'Depot A',
+    destination: 'Port East',
+    vehicleId: seededVehicles[6]._id, // EVN-001 (Available)
+    driverId: seededDrivers[6]._id, // Charles Brown (Available)
+    cargoWeight: 350,
+    plannedDistance: 80,
+    status: 'Draft'
+  }
+];
 
-    const seededTrips = await Trip.insertMany(trips);
-    console.log(`Seeded ${seededTrips.length} trips.`);
+const seededTrips = await Trip.insertMany(trips);
+console.log(`Seeded ${seededTrips.length} trips.`);
 
     console.log('Database Seeding Complete!');
   } catch (error) {
