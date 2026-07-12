@@ -107,18 +107,19 @@ export default function Login() {
               </button>
             </div>
 
-            {/* Role access legend */}
+            {/* Demo Credentials */}
             <div style={{
               marginTop: "1.5rem", padding: "1rem", fontSize: "0.75rem",
               background: "rgba(250,204,21,0.05)", border: "1px solid rgba(250,204,21,0.12)",
               borderRadius: "8px", lineHeight: 1.8
             }}>
               <div style={{ fontWeight: 600, color: "#facc15", marginBottom: "0.35rem", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.65rem" }}>
-                Access is scoped by role after login
+                Demo Credentials
               </div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Admin → Fleet, Maintenance</div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Safety Officer → Drivers, Compliance</div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> Financial Analyst → Fuel & Expenses</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Admin:</b> admin@transitops.com / admin123</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Safety Officer:</b> safety@transitops.com / safety123</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Driver:</b> driver@transitops.com / driver123</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Financial Analyst:</b> finance@transitops.com / finance123</div>
             </div>
           </>
         )}

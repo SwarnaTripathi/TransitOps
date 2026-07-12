@@ -3,7 +3,6 @@ import { useState } from "react";
 export default function LoginForm({ onSubmit, loading, error }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Admin");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
@@ -35,21 +34,6 @@ export default function LoginForm({ onSubmit, loading, error }) {
           autoComplete="email"
           autoFocus
         />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="login-role">Sign in as</label>
-        <select
-          id="login-role"
-          className="form-select"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="Admin">Admin</option>
-          <option value="Safety Officer">Safety Officer</option>
-          <option value="Financial Analyst">Financial Analyst</option>
-          <option value="Driver">Driver</option>
-        </select>
       </div>
 
       <div className="form-group">
