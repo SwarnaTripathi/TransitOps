@@ -113,5 +113,49 @@ export const api = {
       headers: getHeaders()
     });
     return handleResponse(res);
+  },
+
+  // Trips
+  getTrips: async () => {
+    const res = await fetch(`${API_BASE_URL}/trips`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  createTrip: async (tripData) => {
+    const res = await fetch(`${API_BASE_URL}/trips`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(tripData)
+    });
+    return handleResponse(res);
+  },
+
+  dispatchTrip: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/trips/${id}/dispatch`, {
+      method: 'PATCH',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  completeTrip: async (id, completeData) => {
+    const res = await fetch(`${API_BASE_URL}/trips/${id}/complete`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(completeData)
+    });
+    return handleResponse(res);
+  },
+
+  cancelTrip: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/trips/${id}/cancel`, {
+      method: 'PATCH',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
   }
 };
+

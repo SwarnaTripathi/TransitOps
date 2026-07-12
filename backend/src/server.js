@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import vehicleRoutes from './modules/vehicles/vehicleRoutes.js';
 import driverRoutes from './modules/drivers/driverRoutes.js';
 import activityRoutes from './shared/routes/activityRoutes.js';
+import tripRoutes from './modules/trips/tripRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/activity-logs', activityRoutes);
+app.use('/api/trips', tripRoutes);
 
 // Root route
 app.get('/', (req, res) => {
