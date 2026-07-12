@@ -6,6 +6,12 @@ export default function TripsPage({ onShowToast, userRole }) {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState('kanban'); // 'kanban' or 'list'
+  const [vehicles, setVehicles] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [vehicleFilter, setVehicleFilter] = useState('');
+  const [driverFilter, setDriverFilter] = useState('');
+  const [fetchError, setFetchError] = useState(false);
 
   // Available lists for Trip Creation
   const [availableVehicles, setAvailableVehicles] = useState([]);
@@ -32,20 +38,43 @@ export default function TripsPage({ onShowToast, userRole }) {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-      const res = await api.getTrips();
+      setFetchError(false);
+      const res = await api.getTrips({
+        status: statusFilter,
+        vehicleId: vehicleFilter,
+        driverId: driverFilter
+      });
       if (res.success) {
         setTrips(res.data);
       }
     } catch (error) {
+      setFetchError(true);
       onShowToast(error.message, 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchFilterResources = async () => {
+    try {
+      const [vRes, dRes] = await Promise.all([
+        api.getVehicles(),
+        api.getDrivers()
+      ]);
+      if (vRes.success) setVehicles(vRes.data);
+      if (dRes.success) setDrivers(dRes.data);
+    } catch (error) {
+      console.error('Failed to load filter options:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilterResources();
+  }, []);
+
   useEffect(() => {
     fetchTrips();
-  }, [userRole]);
+  }, [statusFilter, vehicleFilter, driverFilter, userRole]);
 
   const openCreateModal = async () => {
     setSource('');
@@ -209,6 +238,20 @@ export default function TripsPage({ onShowToast, userRole }) {
     }
   };
 
+  const getSummary = () => {
+    const counts = { Draft: 0, Dispatched: 0, Completed: 0, Cancelled: 0 };
+    trips.forEach(t => {
+      if (counts[t.status] !== undefined) {
+        counts[t.status]++;
+      }
+    });
+    return counts;
+  };
+
+  const summary = getSummary();
+
+  const hasActiveFilters = statusFilter || vehicleFilter || driverFilter || search;
+
   return (
     <div>
       <div className="page-header">
@@ -253,34 +296,179 @@ export default function TripsPage({ onShowToast, userRole }) {
         </div>
       </div>
 
-      {/* Filter and Search */}
-      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
-        <div style={{ flex: 1 }}>
+      {/* KPI Summary Cards */}
+      <div className="dashboard-grid" style={{ marginBottom: '1.5rem' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
+          <div className="kpi-title" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Draft Trips</div>
+          <div className="kpi-value" style={{ fontSize: '1.8rem', fontWeight: 700, marginTop: '0.25rem' }}>{summary.Draft}</div>
+        </div>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
+          <div className="kpi-title" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Dispatched Trips</div>
+          <div className="kpi-value" style={{ fontSize: '1.8rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-info)' }}>{summary.Dispatched}</div>
+        </div>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
+          <div className="kpi-title" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Completed Trips</div>
+          <div className="kpi-value" style={{ fontSize: '1.8rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-success)' }}>{summary.Completed}</div>
+        </div>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
+          <div className="kpi-title" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Cancelled Trips</div>
+          <div className="kpi-value" style={{ fontSize: '1.8rem', fontWeight: 700, marginTop: '0.25rem', color: 'var(--color-danger)' }}>{summary.Cancelled}</div>
+        </div>
+      </div>
+
+      {/* Filters & Search Control Panel */}
+      <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+        <div style={{ flex: '2 1 300px' }}>
           <input 
             type="text" 
             className="form-control" 
-            placeholder="Search trips by source, destination, driver, or vehicle reg number..." 
+            placeholder="Search trips by source or destination..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+        <div style={{ flex: '1 1 150px' }}>
+          <select
+            className="form-control"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{ width: '100%' }}
+          >
+            <option value="">All Statuses</option>
+            <option value="Draft">Draft</option>
+            <option value="Dispatched">Dispatched</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div style={{ flex: '1 1 180px' }}>
+          <select
+            className="form-control"
+            value={vehicleFilter}
+            onChange={(e) => setVehicleFilter(e.target.value)}
+            style={{ width: '100%' }}
+          >
+            <option value="">All Vehicles</option>
+            {vehicles.map(v => (
+              <option key={v._id} value={v._id}>{v.name} ({v.regNumber})</option>
+            ))}
+          </select>
+        </div>
+        <div style={{ flex: '1 1 180px' }}>
+          <select
+            className="form-control"
+            value={driverFilter}
+            onChange={(e) => setDriverFilter(e.target.value)}
+            style={{ width: '100%' }}
+          >
+            <option value="">All Drivers</option>
+            {drivers.map(d => (
+              <option key={d._id} value={d._id}>{d.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {loading ? (
-        <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <div style={{ color: 'var(--text-secondary)' }}>Loading trip data...</div>
+      {/* Error State Banner */}
+      {fetchError && (
+        <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: '4px solid var(--color-danger)', background: 'rgba(239, 68, 68, 0.05)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span>⚠️</span>
+            <span style={{ color: 'var(--text-primary)', fontSize: '0.9rem' }}>Failed to load trips. Please try again.</span>
+          </div>
+          <button className="btn" style={{ background: 'var(--color-danger)', color: 'white', padding: '0.4rem 1rem', fontSize: '0.8rem' }} onClick={fetchTrips}>
+            Retry
+          </button>
         </div>
+      )}
+
+      {loading ? (
+        viewMode === 'kanban' ? (
+          <div className="kanban-board">
+            {['Draft', 'Dispatched', 'Completed', 'Cancelled'].map((col) => (
+              <div key={col} className="kanban-column" style={{ opacity: 0.6 }}>
+                <div className="kanban-column-header">
+                  <span className="kanban-column-title">{col}</span>
+                  <span className="kanban-column-count">...</span>
+                </div>
+                <div className="trip-card-list">
+                  {[1, 2].map(n => (
+                    <div key={n} className="trip-card skeleton-pulse" style={{ height: '140px', background: 'rgba(255, 255, 255, 0.03)' }}>
+                      <div style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '70%', marginBottom: '12px' }}></div>
+                      <div style={{ height: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '4px', width: '50%', marginBottom: '8px' }}></div>
+                      <div style={{ height: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '4px', width: '40%', marginBottom: '8px' }}></div>
+                      <div style={{ height: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '4px', width: '60%' }}></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
+            <table className="table" style={{ opacity: 0.6 }}>
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Vehicle</th>
+                  <th>Driver</th>
+                  <th>Cargo Weight</th>
+                  <th>Planned Dist</th>
+                  <th>Actual Details</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3, 4, 5].map(n => (
+                  <tr key={n}>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '120px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '100px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '80px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '60px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '60px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '80px' }}></div></td>
+                    <td><div className="skeleton-pulse" style={{ height: '16px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '4px', width: '60px' }}></div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
       ) : filteredTrips.length === 0 ? (
         <div className="glass-card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚚</div>
-          <h4>No Trips Found</h4>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '400px', margin: '0.5rem auto' }}>
-            {search ? 'No trips match your current search filters.' : 'Get started by planning a new dispatch trip route.'}
-          </p>
-          {!search && isFleetManager && (
-            <button className="btn btn-primary" style={{ marginTop: '1rem' }} onClick={openCreateModal}>
-              Create First Trip
-            </button>
+          {hasActiveFilters ? (
+            <>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔍</div>
+              <h4>No Match Found</h4>
+              <p style={{ color: 'var(--text-secondary)', maxWidth: '400px', margin: '0.5rem auto' }}>
+                No trips match your current filters.
+              </p>
+              <button 
+                className="btn btn-primary" 
+                style={{ marginTop: '1rem' }} 
+                onClick={() => {
+                  setStatusFilter('');
+                  setVehicleFilter('');
+                  setDriverFilter('');
+                  setSearch('');
+                }}
+              >
+                Reset Filters
+              </button>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚚</div>
+              <h4>No Trips Found</h4>
+              <p style={{ color: 'var(--text-secondary)', maxWidth: '400px', margin: '0.5rem auto' }}>
+                Get started by planning a new dispatch trip route.
+              </p>
+              {isFleetManager && (
+                <button className="btn btn-primary" style={{ marginTop: '1rem' }} onClick={openCreateModal}>
+                  Create First Trip
+                </button>
+              )}
+            </>
           )}
         </div>
       ) : viewMode === 'kanban' ? (

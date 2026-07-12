@@ -116,8 +116,22 @@ export const api = {
   },
 
   // Trips
-  getTrips: async () => {
-    const res = await fetch(`${API_BASE_URL}/trips`, {
+  getTrips: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.status) params.append('status', filters.status);
+    if (filters.vehicleId) params.append('vehicleId', filters.vehicleId);
+    if (filters.driverId) params.append('driverId', filters.driverId);
+    
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetch(`${API_BASE_URL}/trips${queryString}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(res);
+  },
+
+  getTripById: async (id) => {
+    const res = await fetch(`${API_BASE_URL}/trips/${id}`, {
       method: 'GET',
       headers: getHeaders()
     });
