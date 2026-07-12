@@ -6,6 +6,8 @@ import vehicleRoutes from './modules/vehicles/vehicleRoutes.js';
 import driverRoutes from './modules/drivers/driverRoutes.js';
 import activityRoutes from './shared/routes/activityRoutes.js';
 import maintenanceRoutes from './modules/maintenance/maintenanceRoutes.js';
+import fuelExpenseRoutes from './modules/fuelExpense/fuelExpenseRoutes.js';
+import reportRoutes from './modules/reports/reportRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +36,8 @@ app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/activity-logs', activityRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/fuel', fuelExpenseRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Root route
 app.get('/', (req, res) => {
