@@ -8,7 +8,7 @@ import ActivityLog from '../shared/models/ActivityLog.js';
  * @returns {Promise<number>} Number of logs created
  */
 export const seedActivityLogs = async (users, vehicles, drivers) => {
-  const fleetManager = users.find((u) => u.role === 'Admin');
+  const fleetManager = users.find((u) => u.role === 'Fleet Manager');
   const safetyOfficer = users.find((u) => u.role === 'Safety Officer');
   const driverUser = users.find((u) => u.role === 'Driver');
 

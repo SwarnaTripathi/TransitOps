@@ -4,6 +4,26 @@ export default function LoginForm({ onSubmit, loading, error }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+
+  const handleRoleSelect = (e) => {
+    const role = e.target.value;
+    setSelectedRole(role);
+    
+    if (role === "Fleet Manager") {
+      setEmail("admin@transitops.com");
+      setPassword("admin123");
+    } else if (role === "Safety Officer") {
+      setEmail("safety@transitops.com");
+      setPassword("safety123");
+    } else if (role === "Driver") {
+      setEmail("driver@transitops.com");
+      setPassword("driver123");
+    } else if (role === "Financial Analyst") {
+      setEmail("finance@transitops.com");
+      setPassword("finance123");
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -20,6 +40,23 @@ export default function LoginForm({ onSubmit, loading, error }) {
           <span>{error}</span>
         </div>
       )}
+
+      <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+        <label htmlFor="quick-login-role">Quick Login Role</label>
+        <select
+          id="quick-login-role"
+          className="form-select"
+          value={selectedRole}
+          onChange={handleRoleSelect}
+          style={{ borderColor: "#facc15", background: "rgba(250,204,21,0.1)" }}
+        >
+          <option value="" disabled>Select a role to auto-fill...</option>
+          <option value="Fleet Manager">Fleet Manager</option>
+          <option value="Safety Officer">Safety Officer</option>
+          <option value="Financial Analyst">Financial Analyst</option>
+          <option value="Driver">Driver</option>
+        </select>
+      </div>
 
       <div className="form-group">
         <label htmlFor="login-email">Email Address</label>

@@ -46,7 +46,7 @@ const validateCreateUser = (req, res, next) => {
     return sendError(res, "Password must be at least 6 characters.", 400, "VALIDATION_ERROR");
   }
 
-  const validRoles = ["Admin", "Driver", "Safety Officer", "Financial Analyst"];
+  const validRoles = ["Fleet Manager", "Driver", "Safety Officer", "Financial Analyst"];
   if (role && !validRoles.includes(role)) {
     return sendError(
       res,
@@ -76,7 +76,7 @@ const validateUpdateUser = (req, res, next) => {
     }
   }
 
-  const validRoles = ["Admin", "Driver", "Safety Officer", "Financial Analyst"];
+  const validRoles = ["Fleet Manager", "Driver", "Safety Officer", "Financial Analyst"];
   if (role && !validRoles.includes(role)) {
     return sendError(
       res,

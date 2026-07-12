@@ -9,8 +9,8 @@ import { sendError } from "../utils/response.js";
  * @returns {Function} Express middleware
  *
  * Usage:
- *   router.get("/admin", authGuard, roleGuard("Admin"), handler);
- *   router.get("/mixed", authGuard, roleGuard("Admin", "Safety Officer"), handler);
+ *   router.get("/admin", authGuard, roleGuard("Fleet Manager"), handler);
+ *   router.get("/mixed", authGuard, roleGuard("Fleet Manager", "Safety Officer"), handler);
  */
 const roleGuard = (...allowedRoles) => {
   return (req, res, next) => {

@@ -1,9 +1,9 @@
 export const users = [
   {
-    name: 'Admin',
+    name: 'Fleet Manager',
     email: 'admin@transitops.com',
     password: 'admin123',
-    role: 'Admin',
+    role: 'Fleet Manager',
     phone: '+91-9876543210',
     isActive: true,
   },
@@ -43,7 +43,7 @@ export const users = [
     name: 'Ananya Gupta',
     email: 'manager@transitops.com',
     password: 'manager123',
-    role: 'Admin',
+    role: 'Fleet Manager',
     phone: '+91-9876543215',
     isActive: true,
   },

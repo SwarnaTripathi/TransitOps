@@ -116,7 +116,7 @@ export default function Login() {
               <div style={{ fontWeight: 600, color: "#facc15", marginBottom: "0.35rem", textTransform: "uppercase", letterSpacing: "0.05em", fontSize: "0.65rem" }}>
                 Demo Credentials
               </div>
-              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Admin:</b> admin@transitops.com / admin123</div>
+              <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Fleet Manager:</b> admin@transitops.com / admin123</div>
               <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Safety Officer:</b> safety@transitops.com / safety123</div>
               <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Driver:</b> driver@transitops.com / driver123</div>
               <div style={{ color: "#a1a1aa" }}><span style={{ color: "#facc15" }}>•</span> <b>Financial Analyst:</b> finance@transitops.com / finance123</div>

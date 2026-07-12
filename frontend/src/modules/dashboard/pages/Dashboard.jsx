@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Only Admin uses this top-level data fetch
-    if (role !== "Admin") return;
+    if (role !== "Fleet Manager") return;
 
     const loadData = async () => {
       try {
@@ -99,7 +99,7 @@ export default function Dashboard() {
         </div>
         <div className="role-badge manager-badge">
           <span className="role-badge-icon">⚙️</span>
-          <span>Admin</span>
+          <span>Fleet Manager</span>
         </div>
       </div>
 

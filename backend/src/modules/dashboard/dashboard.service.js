@@ -206,7 +206,7 @@ const getFinancialAnalystStats = async () => {
  */
 export const getDashboardStatsByRole = async (user) => {
   switch (user.role) {
-    case "Admin":
+    case "Fleet Manager":
       return getFleetManagerStats();
     case "Driver":
       return getDriverStats(user._id);

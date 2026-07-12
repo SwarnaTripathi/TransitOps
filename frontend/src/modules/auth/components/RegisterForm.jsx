@@ -60,7 +60,7 @@ export default function RegisterForm({ onSubmit, loading, error }) {
           value={role}
           onChange={(e) => setRole(e.target.value)}
         >
-          <option value="Admin">Admin</option>
+          <option value="Fleet Manager">Fleet Manager</option>
           <option value="Safety Officer">Safety Officer</option>
           <option value="Financial Analyst">Financial Analyst</option>
           <option value="Driver">Driver</option>
